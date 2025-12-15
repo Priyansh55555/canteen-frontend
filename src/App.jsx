@@ -12,7 +12,7 @@ export const Axios = axios.create({
 });
 
 
-const publicRoutes = ["/login", "/signup"];
+const publicRoutes = ["/", "/signup"];
 
 const App = () => {
   const renderRoutes = (config) => (
@@ -31,8 +31,12 @@ const App = () => {
 
 
   useEffect(()=>{
-    if(!user && !isLoading && !publicRoutes.includes(currentRoute)){
+    console.log(user, currentRoute);
+    if(isLoading) return;
+    if(!user && !publicRoutes.includes(currentRoute)){
       navigate("/");
+    }else if(user && publicRoutes.includes(currentRoute)){
+      navigate("/dashboard");
     }
   },[isLoading, user])
 

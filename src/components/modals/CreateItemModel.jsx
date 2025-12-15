@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useCreateFood } from "../hooks/adminHook";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Upload, XCircle, PlusCircle, Loader } from "lucide-react";
+import { Upload, XCircle, PlusCircle, Loader, X } from "lucide-react";
 import { zfd } from "zod-form-data";
 import toast from "react-hot-toast";
-
+import { extractMessageFromError } from "../../utils/errorHandler";
+import { useCreateFood } from "../../hooks/adminHook";
 // ---------------------------
 // Zod schema
 // ---------------------------
@@ -25,7 +25,7 @@ const FoodSchema = z.object({
   image: fileSchema,
 });
 
-const Dashboard = () => {
+const CreateItemModel = ({ onClose }) => {
   const { mutate: createFoodItem } = useCreateFood();
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -54,23 +54,32 @@ const Dashboard = () => {
         reset();
         setPreviewImage(null);
       },
-    });
+      onError: (error) =>{
+        toast.error(extractMessageFromError(error));
+      }
+    },
+  );
   };
 
   return (
-    <div className="w-full flex justify-center p-8 bg-gray-100 min-h-screen">
-      <div className="w-full max-w-xl bg-white shadow-lg rounded-2xl p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-          <PlusCircle size={26} /> Create New Food Item
-        </h2>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <div className="fixed inset-0 bg-black/20 flex items-center justify-center">
+      <div className="w-full  max-w-xl flex flex-col overflow-y-auto  bg-white shadow-xl  max-h-full rounded-2xl p-6 m-2 border border-gray-400">
+        <div className="flex items-start">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            Add New Item
+          </h2>
+          <X 
+          onClick={onClose}
+          className="rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 ml-auto w-9 h-9 p-1" />
+        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex-1">
+          <div className="space-y-4 ">
           {/* Name */}
           <div>
             <label className="block font-medium text-gray-700 mb-1">Food Name</label>
             <input
               {...register("name")}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 border bg-gray-100 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="Enter food name"
             />
             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
@@ -82,7 +91,7 @@ const Dashboard = () => {
             <input
               type="number"
               {...register("price")}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="px-3 py-2 border bg-gray-100 border-gray-200 w-full rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="Enter price"
             />
             {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>}
@@ -93,7 +102,7 @@ const Dashboard = () => {
             <label className="block font-medium text-gray-700 mb-1">Category</label>
             <input
               {...register("category")}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="px-3 py-2 border bg-gray-100 border-gray-200 w-full rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="e.g., Fast Food, Vegan, Drinks"
             />
             {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>}
@@ -105,7 +114,7 @@ const Dashboard = () => {
             <textarea
               rows={3}
               {...register("description")}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="px-3 py-2 border bg-gray-100 border-gray-200 w-full rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="Write a short description..."
             />
             {errors.description && (
@@ -119,7 +128,7 @@ const Dashboard = () => {
 
             {/* Upload Box */}
             {!previewImage && (
-              <div className="border border-dashed border-gray-400 rounded-xl p-6 text-center hover:bg-gray-50">
+              <div className="border border-dashed bg-gray-100 border-gray-400 rounded-xl p-6 text-center hover:bg-gray-50">
                 <label className="cursor-pointer flex flex-col items-center gap-2">
                   <Upload className="text-gray-600" size={28} />
                   <span className="text-gray-600">Click to upload</span>
@@ -164,11 +173,11 @@ const Dashboard = () => {
 
             {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>}
           </div>
-
+          </div>
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition flex justify-center items-center gap-2 disabled:opacity-50 cursor-pointer"
+            className="w-full mt-2 bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition flex justify-center items-center gap-2 disabled:opacity-50 cursor-pointer"
             disabled={isSubmitting || !isValid} // disable if form invalid or submitting
           >
             {isSubmitting ? (
@@ -186,4 +195,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default CreateItemModel;

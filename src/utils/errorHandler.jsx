@@ -9,3 +9,7 @@ export const formatedError = (error)=>{
         return "Something went wrong";
     }
 }
+
+export const extractMessageFromError = (error, fallbackMessage)=>{
+    return error?.response?.data?.message || error?.message || fallbackMessage || "Something went wrong";
+}
