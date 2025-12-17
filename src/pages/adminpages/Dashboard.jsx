@@ -1,63 +1,55 @@
-import React, { useMemo, useState } from 'react'
-import CreateItemModel from '../../components/modals/CreateItemModel';
+import React, { useMemo } from 'react'
 import { useGetUser } from '../../hooks/AuthHook';
-import { ChartColumn, Clock5, List, ListOrdered, ListOrderedIcon, UtensilsCrossed } from 'lucide-react';
+import { History, ListOrdered, ShoppingBag, UtensilsCrossed, UtensilsCrossedIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/layout/Header';
+import { Statics } from "../../constants/DashboardStatics";
+
 
 const Dashboard = () => {
   const { data } = useGetUser();
+  const isAdmin = data?.user?.role === "admin";
+  const navigate = useNavigate();
 
-
-  const Statics = useMemo(() => {
-    return [{
-      heading: "Total Orders Today",
-      statics: "23",
-      icon: {
-        icon: ChartColumn,
-        color: "blue"
-      }
-    }, {
-      heading: "Current Serving",
-      statics: "23",
-      icon: {
-        icon: Clock5,
-        color: "green"
-      }
-    }, {
-      heading: "Pending Orders",
-      statics: "23",
-      icon: {
-        icon: List,
-        color: "orange"
-      }
-    }]
-  }, []);
   return (
     <div className='flex flex-col'>
       <Header />
-      <div className="p-4">
-
+      <div className="p-6 w-full max-w-[1400px] mx-auto">
         <div className="p-4 rounded-xl w-full bg-white border border-gray-200">
           <p className='font-semibold text-lg'> Welcome, {data?.user?.name}</p>
-          <p className="text-gray-600 mt-4"> Manage orders and menu from your dashboard </p>
+          <p className="text-gray-600 mt-4"> {isAdmin ? "Manage orders and menu from your dashboard" : "Ready to order delicious food? Check out our menu and place your order!"} </p>
         </div>
 
-
-        <div className="grid mt-4 gap-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 ">
-          {
-            Statics.map((item) => (
-              <StaticsCard key={item.heading} heading={item.heading} statics={item.statics} icon={item.icon} />
+        {isAdmin ?
+          <>
+            <div className="grid mt-6 gap-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 ">
+              {
+                Statics.map((item) => (
+                  <StaticsCard key={item.heading} heading={item.heading} statics={item.statics} icon={item.icon} />
+                ))
+              }
+            </div>
+          </>
+          :
+          null
+        }
+        <div className="grid mt-6 gap-4  sm:grid-cols-2 grid-cols-1 ">
+          {isAdmin ?
+            cardDataAdmin.map((item) => (
+              <Card key={item.label} data={item} />
             ))
-          }
-        </div>
-
-        <div className="grid mt-4 gap-4  sm:grid-cols-2 grid-cols-1 ">
-          {
+            :
             cardData.map((item) => (
               <Card key={item.label} data={item} />
             ))
           }
+        </div>
+
+        <div className="flex items-center gap-4 mt-6 rounded-lg p-6 justify-center flex-col bg-white border border-gray-200 ">
+          <ShoppingBag className="w-12 h-12 text-gray-400" />
+          <p className="font-semibold text-xl">Ready to Order?</p>
+          <p className="text-gray-700">Browse our delicious menu and place your order</p>
+          <button onClick={() => navigate("/menu")} className="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg">View Menu</button>
         </div>
       </div>
     </div>
@@ -84,7 +76,7 @@ const StaticsCard = ({ heading, statics, icon }) => {
 }
 
 
-const cardData = [
+const cardDataAdmin = [
   {
     icon: <ListOrdered className="bg-blue-300/50 text-blue-600 rounded-full w-14 h-14 p-3" />,
     label: "Order Queue",
@@ -98,6 +90,21 @@ const cardData = [
     link: "/menu-managment"
   }
 ]
+
+const cardData = [
+  {
+    icon: <UtensilsCrossedIcon className="bg-orange-300/50 text-orange-600 rounded-full w-14 h-14 p-3 " />,
+    label: "Browse Menu",
+    description: "View available items",
+    link: "/menu"
+  }, {
+    icon: <History className="bg-blue-300/50 text-blue-600 rounded-full w-14 h-14 p-3" />,
+    label: "Order History",
+    description: "live Order Track",
+    link: "/order-history"
+  }
+]
+
 
 const Card = ({ data }) => {
 

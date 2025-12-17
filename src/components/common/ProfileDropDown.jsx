@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import { useGetUser, useLogout } from '../../hooks/AuthHook'
 import { ChevronDown, LogOut } from 'lucide-react';
-import { QueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Navigate } from 'react-router-dom';
 
 const ProfileDropDown = () => {
     const { data } = useGetUser();
@@ -15,12 +13,10 @@ const ProfileDropDown = () => {
             logout(undefined, {
                 onSuccess: () => {
                     console.log("success")
-                    QueryClient.invalidateQueries({ queryKey: ['user'] });
                     toast.success("User Loged out Successfully.");
-                    Navigate("/");
                 },
                 onError: (err) => {
-                    toast.error("Could not log out user. plese try again.")
+                    toast.error("Could not log out user. plese try again.");
                     console.log(err);
                 }
             });
@@ -35,7 +31,7 @@ const ProfileDropDown = () => {
                 onClick={() => setShowDropDown(prev => !prev)}
                 className="flex items-center gap-2 hover:bg-gray-100 bg-gray-50 cursor-pointer p-2 select-none">
                 <div>{image} </div>
-                <div className="flex flex-col items-center ">
+                <div className="flex flex-col justify-center">
                     <p className="leading-4 text-sm font-semibold ">{data?.user?.name}</p>
                     <p className="laeding-4 text-sm text-gray-700">{data?.user?.email}</p>
                 </div>
