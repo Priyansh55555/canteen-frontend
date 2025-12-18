@@ -17,7 +17,7 @@ const MenuManagment = () => {
   const AddNewItem = (
     <button
       onClick={() => setShowModel(true)}
-      className="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-lg"
+      className="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-lg [justify-self:right]"
     >
       Add Item
     </button>

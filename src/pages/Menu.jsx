@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useGetAllMenu } from '../hooks/MenuHook';
-import {  Plus } from 'lucide-react';
+import {  Plus, ShoppingCart } from 'lucide-react';
 import BackHeader from '../components/layout/BackHeader';
+import { useCartStore } from '../stores/cartStore';
+import { useNavigate } from "react-router-dom";
+import toast from 'react-hot-toast';
 
 const SkeletonCard = () => {
   return (
@@ -24,13 +27,24 @@ const SkeletonCard = () => {
 const Menu = () => {
   const { data: menu, isLoading } = useGetAllMenu();
 
+  const addToCart = useCartStore(state => state.addToCart);
+  
+  const totalCount = useCartStore((state) => state.getTotalCount());
   const handleAddToCart = (data)=>{
-
+    toast.success(data.name + " Added to cart")
+    addToCart(data);
   }
+
+
+  const navigate = useNavigate();
+  const RightComponent = useMemo(()=>{
+    return <div onClick={() => navigate("/cart")}  className="cursor-pointer ml-auto relative"><ShoppingCart />
+    <span className="bg-orange-500 rounded-full text-xs font-semibold flex items-center justify-center absolute w-4 h-4 top-0 -translate-1/2  left-1/2">{totalCount}</span></div>
+  },[totalCount, navigate])
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <BackHeader title="Menu" />
+      <BackHeader title="Menu" RightComponent={RightComponent} />
 
       <div className="p-8 max-w-[1400px] w-full mx-auto">
       {isLoading ? (

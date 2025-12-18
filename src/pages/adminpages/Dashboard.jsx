@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useGetUser } from '../../hooks/AuthHook';
 import { History, ListOrdered, ShoppingBag, UtensilsCrossed, UtensilsCrossedIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
