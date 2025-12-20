@@ -5,17 +5,31 @@ import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ConfirmCheckoutModel from '../components/modals/ConfirmCheckoutModel';
 import { AnimatePresence } from 'framer-motion';
+import TokenCard from '../components/cart/TokenCard';
 
 const Cart = () => {
   const CartItems = useCartStore(state => state.cartItems);
   const getTotalPrice = useCartStore(state => state.getTotalPrice);
+  const clearCart = useCartStore(state => state.clearCart);
+  
   const navigate = useNavigate();
   const CartIsEmpty = CartItems.length===0;
   const length = CartIsEmpty? "" : "("+CartItems.length+")";
   const [ showConfirmModel , setShowConfirmModel ] = useState(false);
+  const [ tokenNumber, setTokenNumber ] = useState(null);
+
+  const handleCartClose = (data)=>{
+    setShowConfirmModel(false);
+    if(!data?.data?.tokenNumber) return;
+    clearCart();
+    setTokenNumber(data.data.tokenNumber)
+  }
+
+  if(tokenNumber)
+    return <TokenCard data={tokenNumber} />
 
   return (
-    <div className="bg-gray-100">
+    <div className="bg-gray-100 min-h-screen">
         <BackHeader title={"Cart"+length} />
         <div className="max-w-[1400px] w-full mx-auto px-4 pt-6 pb-40 space-y-4 ">
           {CartItems.map(item => (
@@ -46,7 +60,7 @@ const Cart = () => {
       }
       <AnimatePresence>
       {showConfirmModel &&
-        <ConfirmCheckoutModel onClose={()=> setShowConfirmModel(false)}/>
+        <ConfirmCheckoutModel onClose={handleCartClose}/>
       }
       </AnimatePresence>
     </div>

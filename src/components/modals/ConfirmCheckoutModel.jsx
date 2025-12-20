@@ -3,26 +3,27 @@ import { X } from "lucide-react";
 import toast from "react-hot-toast";
 import { extractMessageFromError } from "../../utils/errorHandler";
 import { motion } from "framer-motion";
-import { useDeleteFood } from "../../hooks/adminHook";
 import { useCartStore } from "../../stores/cartStore";
+import { usePlaceOrder } from "../../hooks/useOrder";
 
 const ConfirmCheckoutModel = ({onClose}) => {
-   
-    const [isDeleting, setIsDeleting] = useState(false);
 
       const CartItems = useCartStore(state => state.cartItems);
       const getTotalPrice = useCartStore(state => state.getTotalPrice);
-    const handleDelete = async () => {
-        // setIsDeleting(true);
-        // try {
-        //     await deleteFoodItem(data._id);
-        //     toast.success("Food Item Deleted Successfully");
-        //     onClose();
-        // } catch (error) {
-        //     toast.error(extractMessageFromError(error));
-        // } finally {
-        //     setIsDeleting(false);
-        // }
+      const { mutateAsync: placeOrder } = usePlaceOrder();
+      const [ isLoading, setIsLoading ] = useState();
+
+      const handleCheckout = async () => {
+        try {
+            setIsLoading(true);
+            const res = await placeOrder({items : CartItems});
+            toast.success("Order Placed Successfully");
+            onClose({ data : res });
+        } catch (error) {
+            toast.error(extractMessageFromError(error));
+        } finally{
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -65,12 +66,12 @@ const ConfirmCheckoutModel = ({onClose}) => {
              
 
                 <div className="flex mt-3 gap-2">
-                    <button onClick={onClose} className="cursor-pointer border border-gray-300 bg-gray-100 hover:bg-gray-200 w-full rounded-lg py-2">Cancle</button>
-                    <button onClick={handleDelete} className="cursor-pointer max-sm:text-sm border-gray-300 bg-orange-500 text-white w-full rounded-lg py-2">
-                        {isDeleting ? (
+                    <button disabled={isLoading} onClick={onClose} className="cursor-pointer border border-gray-300 bg-gray-100 hover:bg-gray-200 w-full rounded-lg py-2">Cancle</button>
+                    <button disabled={isLoading} onClick={handleCheckout} className="cursor-pointer max-sm:text-sm border-gray-300 bg-orange-500 text-white w-full rounded-lg py-2">
+                        {isLoading ? (
                             <span className="flex items-center justify-center gap-2">
                                 <span className="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin" />
-                                Deleting...
+                                Plcing order...
                             </span>
                         ) : (
                             "Confirm Checkout"
