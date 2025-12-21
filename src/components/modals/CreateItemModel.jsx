@@ -7,6 +7,9 @@ import { zfd } from "zod-form-data";
 import toast from "react-hot-toast";
 import { extractMessageFromError } from "../../utils/errorHandler";
 import { useCreateFood } from "../../hooks/adminHook";
+import { motion } from "framer-motion";
+import Checkbox from "../ui/Checkbox";
+
 // ---------------------------
 // Zod schema
 // ---------------------------
@@ -23,10 +26,11 @@ const FoodSchema = z.object({
   category: z.string().min(2, "Category is required"),
   description: z.string().min(5, "Description must be at least 5 characters"),
   image: fileSchema,
+  isAvailable: z.boolean().default(true),
 });
 
 const CreateItemModel = ({ onClose }) => {
-  const { mutate: createFoodItem } = useCreateFood();
+  const { mutateAsync: createFoodItem } = useCreateFood();
   const [previewImage, setPreviewImage] = useState(null);
 
   const {
@@ -34,43 +38,60 @@ const CreateItemModel = ({ onClose }) => {
     handleSubmit,
     setValue,
     formState: { errors, isSubmitting, isValid },
+    watch,
     reset,
   } = useForm({
     resolver: zodResolver(FoodSchema),
     mode: "onChange", // track validation as user types
   });
 
-  const onSubmit = (data) => {
+  
+  const isAvailable = watch("isAvailable");
+  const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("price", data.price);
     formData.append("category", data.category);
     formData.append("description", data.description);
     formData.append("image", data.image);
+    formData.append("isAvailable", data.isAvailable);
 
-    createFoodItem(formData, {
-      onSuccess: () => {
-        toast.success("Food Item Created Successfully");
-        reset();
-        setPreviewImage(null);
-      },
-      onError: (error) =>{
-        toast.error(extractMessageFromError(error));
-      }
-    },
-  );
+    try {
+      await createFoodItem(formData);
+  
+      toast.success("Food Item Created Successfully");
+      reset();
+      setPreviewImage(null);
+      onClose?.();
+  
+    } catch (error) {
+      toast.error(extractMessageFromError(error));
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/20 flex items-center justify-center">
-      <div className="w-full  max-w-xl flex flex-col overflow-y-auto  bg-white shadow-xl  max-h-full rounded-2xl p-6 m-2 border border-gray-400">
+    <motion.div 
+    onClick={onClose}
+    className="fixed inset-0 bg-black/20 flex items-center justify-center z-20"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    >
+      <motion.div 
+      onClick={e => e.stopPropagation()}
+      className="w-full  max-w-xl flex flex-col overflow-y-auto  bg-white shadow-xl  max-h-full rounded-2xl p-6 m-2 border border-gray-400"
+         initial={{ opacity: 0, scale: 0.95, y: 20 }}
+         animate={{ opacity: 1, scale: 1, y: 0 }}
+         exit={{ opacity: 0, scale: 0.95, y: 20 }}
+         transition={{ duration: 0.2, ease: "easeOut" }}
+      >
         <div className="flex items-start">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
             Add New Item
           </h2>
           <X 
           onClick={onClose}
-          className="rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 ml-auto w-9 h-9 p-1" />
+          className="rounded-lg cursor-pointer hover:bg-gray-200 text-gray-600 hover:text-gray-800 ml-auto w-9 h-9 p-1" />
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="flex-1">
           <div className="space-y-4 ">
@@ -121,6 +142,18 @@ const CreateItemModel = ({ onClose }) => {
               <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
             )}
           </div>
+
+                        {/* Availability */}
+                        <div className="flex items-center gap-2">
+            
+                          <Checkbox
+                            state={isAvailable}
+                            setState={() => setValue("isAvailable", !isAvailable, { shouldValidate: true })}
+                          />
+                          <label className="font-medium text-gray-700">
+                            Available
+                          </label>
+                        </div>
 
           {/* Image Upload */}
           <div>
@@ -190,8 +223,8 @@ const CreateItemModel = ({ onClose }) => {
             )}
           </button>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

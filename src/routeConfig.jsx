@@ -7,6 +7,7 @@ import OrderHistory from './pages/OrderHistory';
 import User from './pages/User';
 import OrderQueue from './pages/adminpages/OrderQueue';
 import MenuManagment from './pages/adminpages/MenuManagment';
+import Menu from './pages/Menu';
 
 export const routeConfig = [
     {
@@ -38,5 +39,8 @@ export const routeConfig = [
     },{
         path: "/order-queue",
         element: <OrderQueue />
+    },{
+        path: "/menu",
+        element: <Menu />
     }
 ];

@@ -1,4 +1,4 @@
-import { useMutation , useQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AdminService } from '../services/adminService';
 
 // {   name,
@@ -6,12 +6,40 @@ import { AdminService } from '../services/adminService';
 //     category,
 //     description,
 //     image
+//     isAvailable
 //   }
-export const useCreateFood =  ()=> useMutation({
-        mutationFn: (body)=>AdminService.createFood(body)
-});
 
+export const useCreateFood = () => {
+  const queryClient = useQueryClient();
 
+  return useMutation({
+    mutationFn: (body) => AdminService.createFood(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user', 'menu'] });
+    },
+  });
+};
 
+export const useUpdateFood = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ body, id }) => AdminService.updateFood(body, id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user', 'menu'] });
+    },
+  });
+};
+
+export const useDeleteFood = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id) => AdminService.deleteFood(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user', 'menu'] });
+    },
+  });
+};
 
 

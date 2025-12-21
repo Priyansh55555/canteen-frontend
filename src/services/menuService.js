@@ -15,4 +15,5 @@ export const MenuService = {
             throw err;
         }
     }
-} 
+
+}

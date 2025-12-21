@@ -3,8 +3,9 @@ import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-
 import { routeConfig } from './routeConfig';
 import Layout from './components/layout/Layout';
 import axios from 'axios';
-import { Toaster, toast } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import { useGetUser } from "./hooks/AuthHook";
+import "./App.css";
 export const Axios = axios.create({
   baseURL: '/api',
   timeout: 10000,
