@@ -1,69 +1,71 @@
-import React from 'react'
+import React, { useState } from 'react';
 import { useGetUserOrders } from '../hooks/useOrder';
 import BackHeader from '../components/layout/BackHeader';
-import { formateMDYTime } from "../utils/formateDate";
-import { Clock } from 'lucide-react';
-
-//   {
-//       "_id": "6946b7aad85d7c0b417615ac",
-//       "userId": "6932c66515ff663e0b714e5f",
-//       "items": [
-//           {
-//               "menuItemId": {
-//                   "_id": "69469ab9ae95c35b69a03276",
-//                   "name": "Monkey Soop",
-//                   "price": 100,
-//                   "category": "Veg",
-//                   "description": "monkey king soop",
-//                   "image": "https://res.cloudinary.com/dm95nztgz/image/upload/v1766234808/canteen_items/kvtq8lrrd4blimb3q5dn.png",
-//                   "isAvailable": true,
-//                   "createdAt": "2025-12-20T12:46:49.242Z",
-//                   "updatedAt": "2025-12-20T12:47:57.316Z",
-//                   "__v": 0
-//               },
-//               "quantity": 5,
-//               "_id": "6946b7aad85d7c0b417615ad"
-//           }
-//       ],
-//       "totalAmount": 500,
-//       "tokenNumber": 4,
-//       "status": "pending",
-//       "createdAt": "2025-12-20T14:50:18.161Z",
-//       "updatedAt": "2025-12-20T14:50:18.161Z",
-//       "__v": 0
-//   }
+import OrderHistoryCard from '../components/order-history/OrderHistoryCard';
+import { useNavigate } from 'react-router-dom';
 
 const OrderHistory = () => {
   const { data: userOrders, isLoading } = useGetUserOrders();
+  const isEmpty = !isLoading && !userOrders?.orders?.length;
+
+  // Tab options
+  const tabs = ['Active', 'Completed', 'Cancelled'];
+  const [activeTab, setActiveTab] = useState('Active');
+
+  const navigate = useNavigate();
+  // Filter orders based on selected tab
+  const filteredOrders = (userOrders?.orders || []).filter(order => {
+    const status = order.status.toLowerCase();
+    if (activeTab === 'Active') return ['pending', 'preparing', 'ready'].includes(status);
+    if (activeTab === 'Completed') return status === 'completed';
+    if (activeTab === 'Cancelled') return status === 'cancelled';
+    return true;
+  });
 
   return (
     <div className="bg-gray-100 min-h-screen">
-          <BackHeader title="Order History"/>          
-          <div className="flex flex-col justify-center mx-auto p-4 max-w-[1400px]">
-            {userOrders?.orders?.map(order => (
-              <OrderHistoryCard data={order} key={order._id} />
-            ))}
+      <BackHeader title="Order History" />
+
+      <div className="max-w-[1400px] mx-auto p-4">
+
+        {/* --- Tabs --- */}
+        <div className="flex gap-2 mb-4">
+          {tabs.map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                ${activeTab === tab
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-orange-50'}`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {/* --- Empty State --- */}
+        {(!filteredOrders.length && !isLoading) && (
+          <div className="py-8 max-w-xl rounded-lg border-2 border-dashed border-gray-200 mx-auto flex flex-col items-center justify-center bg-white">
+            <p className="text-3xl font-semibold mt-2">No Orders Yet</p>
+            <p className="max-w-sm px-4 text-center text-gray-500 mt-4">
+              Start your culinary journey! Browse our menu and place your first order.
+            </p>
+            <button onClick={() => navigate('/menu')} className="cursor-pointer hover:bg-orange-600 mt-4 px-4 py-2 text-white bg-orange-500 rounded-lg w-fit mx-auto">
+              Browse Menu
+            </button>
           </div>
+        )}
+
+        {/* --- Order Cards --- */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 mx-4 grid-cols-1 gap-4">
+          {filteredOrders.map(order => (
+            <OrderHistoryCard data={order} key={order._id} />
+          ))}
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default OrderHistory
-
-const OrderHistoryCard = ({ data }) =>{
-
-  return(
-    <div className="border border-gray-300 max-w-[300px] bg-white rounded-lg p-4 ">
-        <div className="w-full flex"> 
-          <span className="text-lg font-semibold mr-2">Token </span>
-          <span className="border-2 border-orange-500 text-orange-500 px-2 rounded-lg pl-2">{data.tokenNumber}</span>
-          <span className="ml-auto">{data.status}</span>
-          </div>
-        
-        <div className="text-sm text-gray-500 mt-4 flex items-center gap-2"><Clock className="w-4 h-4" />{formateMDYTime(data.createdAt)}</div>
-        <div className="flex justify-between border-t border-gray-200 mt-4 pt-2"> 
-          <span className="font-semibold text-gray-600 text-lg">Total Amount : </span> 
-        <span className="text-orange-500 text-xl">₹{data.totalAmount}</span></div>
-    </div>
-  )
-}
+export default OrderHistory;

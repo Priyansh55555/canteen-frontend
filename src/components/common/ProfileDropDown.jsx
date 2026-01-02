@@ -24,7 +24,7 @@ const ProfileDropDown = () => {
             console.log(err);
         }
     };
-    const image = <div className="bg-gray-300 w-8 h-8 rounded-full flex items-center font-bold justify-center">{data?.user?.name?.[0]}</div>
+    const image = <div className="bg-gray-300 w-8 h-8 rounded-full flex items-center font-bold justify-center capitalize">{data?.user?.name?.[0]}</div>
     return (
         <div className=" relative  ml-auto h-full flex items-center">
             <div

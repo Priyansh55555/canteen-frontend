@@ -39,7 +39,7 @@ const Menu = () => {
   const navigate = useNavigate();
   const RightComponent = useMemo(()=>{
     return <div onClick={() => navigate("/cart")}  className="cursor-pointer ml-auto relative"><ShoppingCart />
-    <span className="bg-orange-500 rounded-full text-xs font-semibold flex items-center justify-center absolute w-4 h-4 top-0 -translate-1/2  left-1/2">{totalCount}</span></div>
+    { totalCount ? <span className="bg-orange-500 rounded-full text-xs font-semibold flex items-center justify-center absolute w-4 h-4 top-0 -translate-1/2  left-1/2">{totalCount}</span> : null}</div>
   },[totalCount, navigate])
 
   return (

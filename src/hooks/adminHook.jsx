@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AdminService } from '../services/adminService';
 
 // {   name,
@@ -42,4 +42,20 @@ export const useDeleteFood = () => {
   });
 };
 
+export const useUpdateOrderStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, newStatus }) => AdminService.updateOrderStatus(id, newStatus),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user', 'get-all-orders'] });
+    },
+  });
+};
+
+
+export const useGetAllOrders =  ()=> useQuery({
+  queryKey: ['user', 'get-all-orders'], 
+  queryFn: () => AdminService.getAllOrders()
+});
 
