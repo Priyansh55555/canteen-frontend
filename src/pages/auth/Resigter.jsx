@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Mail, Lock, User, Loader2, ArrowRight, Github } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import  { useRegister } from "../../hooks/AuthHook.jsx";
 import toast from "react-hot-toast";
 import { formatedError } from "../../utils/errorHandler.jsx";
@@ -28,23 +28,21 @@ export default function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
-  const { mutate: Login , isLoading: isRegistering } = useRegister();
+  const { mutateAsync : Login , isLoading: isRegistering } = useRegister();
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
 
     console.log(data);
- 
-     await Login(data, 
-      {
-        onSuccess: (data)=>{
-          console.log("registered successfully", data);
-          toast.success("User Registered Successfully");
-        },
-        onError: (err)=>{
-          toast.error(formatedError(err));
-          console.log("regisration error", err);
-        }
-      })
     
+    try{
+     const res = await Login(data); 
+      console.log("registered successfully", res);
+      toast.success("User Registered Successfully");
+      navigate("/dashboard" , { replace: true });
+    }catch(err){
+      toast.error(formatedError(err));
+      console.log("regisration error", err);
+    }
   };
   
   return (

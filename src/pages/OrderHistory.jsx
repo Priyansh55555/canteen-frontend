@@ -1,12 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGetUserOrders } from '../hooks/useOrder';
 import BackHeader from '../components/layout/BackHeader';
 import OrderHistoryCard from '../components/order-history/OrderHistoryCard';
 import { useNavigate } from 'react-router-dom';
+import socket from '../utils/socket';
 
 const OrderHistory = () => {
   const { data: userOrders, isLoading } = useGetUserOrders();
   const isEmpty = !isLoading && !userOrders?.orders?.length;
+  
+  const [orders, setOrders] = useState([]); 
+
+  useEffect(() => {
+    if (!isLoading && userOrders?.orders) {
+      setOrders(userOrders.orders);
+    }
+  }, [isLoading, userOrders]);
+
+  // 2️⃣ Listen for live updates from socket
+  useEffect(() => {
+    const handleOrderUpdate = (data) => {
+      console.log("Live order update received:", data);
+
+      // Update the matching order's status
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === data.orderId
+            ? { ...order, status: data.status }
+            : order
+        )
+      );
+    };
+
+    socket.on("order-status-updated", handleOrderUpdate);
+
+    // Cleanup listener on unmount
+    return () => {
+      socket.off("order-status-updated", handleOrderUpdate);
+    };
+  }, []);
 
   // Tab options
   const tabs = ['Active', 'Completed', 'Cancelled'];
@@ -14,7 +46,7 @@ const OrderHistory = () => {
 
   const navigate = useNavigate();
   // Filter orders based on selected tab
-  const filteredOrders = (userOrders?.orders || []).filter(order => {
+  const filteredOrders = (orders || []).filter(order => {
     const status = order.status.toLowerCase();
     if (activeTab === 'Active') return ['pending', 'preparing', 'ready'].includes(status);
     if (activeTab === 'Completed') return status === 'completed';

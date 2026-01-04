@@ -1,4 +1,7 @@
 export const formatedError = (error)=>{
+    if(!error?.response){
+        return "Something went wrong";
+    }
     const { status , data } = error?.response;
     console.log("error get", status, data)
     if(status>=500 && status<600){

@@ -111,7 +111,7 @@ const UpdateItemModel = ({ defaultData, onClose }) => {
         transition={{ duration: 0.2, ease: "easeOut" }}
       >
         <div className="flex items-start">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+          <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
             Update Food Item
           </h2>
           <X
