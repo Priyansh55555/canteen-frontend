@@ -1,15 +1,26 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useGetUser } from '../../hooks/AuthHook';
 import { History, ListOrdered, ShoppingBag, UtensilsCrossed, UtensilsCrossedIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/layout/Header';
 import { Statics } from "../../constants/DashboardStatics";
+import { useGetAllOrders } from '../../hooks/adminHook';
 
 
 const Dashboard = () => {
   const { data } = useGetUser();
   const isAdmin = data?.user?.role === "admin";
   const navigate = useNavigate();
+  const {data: orders, isLoading } = useGetAllOrders();
+
+    const statics = useMemo(()=>{
+          if(isLoading || !orders?.orders) return {};
+          return orders.orders.reduce((countMap, currentItem) => {
+              const status = currentItem.status.toLowerCase();
+              countMap[status] = (countMap[status] || 0) + 1;
+              return countMap;
+            }, {});
+      },[orders, isLoading]);
 
   return (
     <div className='flex flex-col'>
@@ -25,7 +36,7 @@ const Dashboard = () => {
             <div className="grid mt-6 gap-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 ">
               {
                 Statics.map((item) => (
-                  <StaticsCard key={item.heading} heading={item.heading} statics={item.statics} icon={item.icon} />
+                  <StaticsCard key={item.heading} heading={item.heading} statics={statics[item.for.toLowerCase()] ?? 0} icon={item.icon} />
                 ))
               }
             </div>

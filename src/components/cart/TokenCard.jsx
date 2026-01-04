@@ -14,7 +14,7 @@ const TokenCard = ( {data} ) => {
         <span className="text-sm">Token Number</span>
         <span className="text-6xl">{data}</span>
         </div>
-        <button className="font-semibold w-full py-1 cursor-pointer rounded-lg bg-orange-500 hover:bg-orange-600 text-white mt-2">Track Order Status</button>
+        <button    onClick={() => navigate("/order-history")} className="font-semibold w-full py-1 cursor-pointer rounded-lg bg-orange-500 hover:bg-orange-600 text-white mt-2">Track Order Status</button>
         <button
         onClick={() => navigate("/dashboard")}
         className="font-semibold w-full py-1 cursor-pointer rounded-lg bg-white hover:bg-gray-100 border border-gray-300 mt-2">Back to Dashboard</button>
