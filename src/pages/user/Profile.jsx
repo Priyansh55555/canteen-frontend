@@ -1,15 +1,17 @@
 import React , {useState, useRef} from 'react';
 import { useForm } from 'react-hook-form';
-import { useGetUser } from '../../hooks/useAuth';
+import { useGetUser, useLogout } from '../../hooks/useAuth';
 import { useUpdateUser } from '../../hooks/useUser';
 import { User, Mail, Phone, MapPin, Edit2, X, Check, Camera, Pencil } from 'lucide-react';
 import { formateTime } from '../../utils/formateDate';
 import ImageUploadDropdown from '../../components/common/ImageUploadDropdown';
+import { ChevronLeft, LogOut } from 'lucide-react';
 import { useImageField } from '../../hooks/useImageField';
 
 const Profile = () => {
   const { data: userData, isLoading } = useGetUser();
   const { mutate: updateUser, isPending } = useUpdateUser();
+  const { mutate: logout } = useLogout();
   const [isEditing, setIsEditing] = useState(false);
   const profileField = useImageField();
   const posterField = useImageField();
@@ -102,17 +104,25 @@ const Profile = () => {
     resetPoster(user?.posterPicture || null);
     if (user) {
       setValue('fullName', user.fullName || '');
-      setValue('phoneNumber', user.phone || '');
+      setValue('phoneNumber', user.phoneNumber || '');
       setValue('address', user.address || '');
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header - Transparent with blur */}
+      <div className="sticky top-0 left-0 right-0 z-20 border-b border-white/20 bg-white/10 backdrop-blur-sm ">
+           <div className='grid grid-cols-3 items-center max-w-4xl w-full mx-auto px-4 justify-between'>
+             <button onClick={() => window.history.back()} className="flex gap-2 sm:py-6 py-3 text-black [justify-self:left] hover:text-black/80 cursor-pointer"><ChevronLeft /> Back</button>
+             <div className='text-center font-semibold text-lg text-black'>Profile</div>
+             <div></div>
+           </div>
+         </div>
+
        {/* Cover/Poster Section */}
-       <div 
-         className="relative h-64 bg-gradient-to-r from-orange-400 to-orange-600 overflow-hidden"
-       >
+         <div className="relative h-64 sm:h-72 bg-gradient-to-r from-orange-400 to-orange-600 ">
+       
          {/* Poster Image */}
          {posterPreview && (
            <img 
@@ -125,102 +135,101 @@ const Profile = () => {
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/20" />
         
-
-
         {/* Profile Content Overlay */}
         <div className="absolute bottom-0 left-0 right-0">
-          <div className="max-w-4xl mx-auto px-4 pb-6 relative">
+          <div className="max-w-4xl mx-auto px-4 relative">
               {/* Poster Edit Buttons */}
-        {isEditing && (
-          <div className="absolute top-4 right-4 z-20 flex gap-2">
-            <ImageUploadDropdown
-              isEditing={isEditing}
-              hasImage={!!posterPreview}
-              onUpload={() => posterInputRef.current?.click()}
-              onRemove={handlePosterRemove}
-              triggerContent={<Camera size={20} className="text-gray-700" />}
-              className="w-8 h-8 flex items-center justify-center bg-white/90 hover:bg-white rounded-xl shadow-lg transition-colors"
-            />
-          </div>
-        )}
-            <div className="flex items-end gap-6">
-              {/* Avatar */}
-              <div className="relative">
-                <div className="w-32 h-32 border-4 border-white bg-orange-50 rounded-full flex items-center justify-center overflow-hidden shadow-xl -mb-2">
-                  {profilePreview ? (
-                    <img src={profilePreview} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <User size={48} className="text-orange-500" />
-                  )}
-                </div>
                 {isEditing && (
-                  <div className="absolute bottom-1 right-1">
+                  <div className="absolute top-4 right-4 z-20 flex gap-2">
                     <ImageUploadDropdown
                       isEditing={isEditing}
-                      hasImage={!!profilePreview}
-                      onUpload={() => profileInputRef.current?.click()}
-                      onRemove={handleProfileRemove}
-                      triggerContent={<Pencil size={14} className="text-white" />}
-                      className="w-8 h-8 flex items-center justify-center bg-orange-500 rounded-full cursor-pointer hover:bg-orange-600 transition-colors shadow-lg"
+                      hasImage={!!posterPreview}
+                      onUpload={() => posterInputRef.current?.click()}
+                      onRemove={handlePosterRemove}
+                      triggerContent={<Camera size={20} className="text-gray-700" />}
+                      className="w-8 h-8 flex items-center justify-center bg-white/90 hover:bg-white rounded-xl shadow-lg transition-colors"
+                      position='br'
                     />
                   </div>
                 )}
-              </div>
+             <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 pt-16 sm:pt-20">
+               {/* Avatar */}
+               <div className="relative translate-y-1/2 self-start sm:self-auto">
+                 <div className="w-24 h-24 sm:w-32 sm:h-32 border-4 border-white bg-orange-50 rounded-full flex items-center justify-center overflow-hidden shadow-xl sm:-mb-2">
+                   {profilePreview ? (
+                     <img src={profilePreview} alt="Profile" className="w-full h-full object-cover" />
+                   ) : (
+                     <User size={36} className="sm:size-48 text-orange-500" />
+                   )}
+                 </div>
+                 {isEditing && (
+                   <div className="absolute bottom-1 right-1">
+                     <ImageUploadDropdown
+                       isEditing={isEditing}
+                       hasImage={!!profilePreview}
+                       onUpload={() => profileInputRef.current?.click()}
+                       onRemove={handleProfileRemove}
+                       triggerContent={<Pencil className="size-4 text-white " />}
+                       className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center bg-orange-500 rounded-full cursor-pointer hover:bg-orange-600 transition-colors shadow-lg"
+                     />
+                   </div>
+                 )}
+               </div>
 
-              {/* User Info */}
-              <div className="flex-1 pb-4">
-                <h1 className="text-3xl font-bold text-white drop-shadow-lg">{user?.name || 'User'}</h1>
-                <p className="text-white/90 mt-1 drop-shadow">{user?.email || 'No email provided'}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white rounded-full text-xs font-semibold capitalize">
-                    {user?.role || 'user'}
-                  </span>
-                  <span className="text-xs text-white/80">
-                    Member since {user?.createdAt ? formateTime(user.createdAt) : 'N/A'}
-                  </span>
-                </div>
-              </div>
+               {/* User Info */}
+               <div className="flex-1 max-sm:translate-y-12  pb-2 sm:pb-4 min-w-0">
+                 <h1 className="text-xl sm:text-3xl font-bold text-white drop-shadow-lg truncate">{user?.name || 'User'}</h1>
+                 <p className="text-white/90 mt-1 drop-shadow text-sm sm:text-base truncate">{user?.email || 'No email provided'}</p>
+                 <div className="flex items-center gap-2 mt-2 flex-wrap">
+                   <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white rounded-full text-xs font-semibold capitalize">
+                     {user?.role || 'user'}
+                   </span>
+                   <span className="text-xs text-white/80">
+                     Member since {user?.createdAt ? formateTime(user.createdAt) : 'N/A'}
+                   </span>
+                 </div>
+               </div>
 
-              {/* Edit Buttons */}
-              <div className="pb-4 flex gap-2">
-                {!isEditing ? (
-                  <button 
-                    onClick={() => setIsEditing(true)}
-                    className="p-3 bg-white/90 hover:bg-white rounded-xl transition-colors shadow-lg"
-                  >
-                    <Edit2 size={20} className="text-gray-700" />
-                  </button>
-                ) : (
-                  <>
-                    <button 
-                      onClick={handleCancel}
-                      className="p-3 bg-white/90 hover:bg-white rounded-xl transition-colors shadow-lg"
-                    >
-                      <X size={20} className="text-gray-700" />
-                    </button>
-                    <button 
-                      onClick={handleSubmit(onSubmit)}
-                      disabled={isPending}
-                      className="p-3 bg-orange-500 hover:bg-orange-600 rounded-xl transition-colors disabled:opacity-50 shadow-lg"
-                    >
-                      {isPending ? (
-                        <div className="w-5 h-5 border-2 border-white/60 border-t-white rounded-full animate-spin" />
-                      ) : (
-                        <Check size={20} className="text-white" />
-                      )}
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
+               {/* Edit Buttons */}
+               <div className="pb-2 sm:pb-4 flex gap-2 self-end sm:self-auto">
+                 {!isEditing ? (
+                   <button 
+                     onClick={() => setIsEditing(true)}
+                     className="p-3 bg-white/90 hover:bg-white rounded-xl transition-colors shadow-lg"
+                   >
+                     <Edit2 size={20} className="text-gray-700" />
+                   </button>
+                 ) : (
+                   <>
+                     <button 
+                       onClick={handleCancel}
+                       className="p-3 bg-white/90 hover:bg-white rounded-xl transition-colors shadow-lg"
+                     >
+                       <X size={20} className="text-gray-700" />
+                     </button>
+                     <button 
+                       onClick={handleSubmit(onSubmit)}
+                       disabled={isPending}
+                       className="p-3 bg-orange-500 hover:bg-orange-600 rounded-xl transition-colors disabled:opacity-50 shadow-lg"
+                     >
+                       {isPending ? (
+                         <div className="w-5 h-5 border-2 border-white/60 border-t-white rounded-full animate-spin" />
+                       ) : (
+                         <Check size={20} className="text-white" />
+                       )}
+                     </button>
+                   </>
+                 )}
+               </div>
+             </div>
           </div>
         </div>
       </div>
 
-      {/* Profile Information */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6">Profile Information</h2>
+       {/* Profile Information */}
+       <div className="max-w-4xl mx-auto px-4 py-8 mt-14">
+         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+           <h2 className="text-lg font-semibold text-gray-900 mb-6">Profile Information</h2>
           
           <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Name */}
@@ -335,6 +344,16 @@ const Profile = () => {
             />
           </form>
         </div>
+              {/* Logout Button */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+             <button
+               onClick={() => logout()}
+               className="w-full flex items-center justify-center gap-2 p-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors border border-red-200"
+             >
+               <LogOut size={18} />
+               <span>Logout</span>
+             </button>
+           </div>
       </div>
     </div>
   );

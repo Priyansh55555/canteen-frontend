@@ -8,10 +8,10 @@ import Profile from './pages/user/Profile';
 import OrderQueue from './pages/adminpages/OrderQueue';
 import MenuManagment from './pages/adminpages/MenuManagment';
 import Menu from './pages/Menu';
+import LandingPage from './pages/LandingPage';
 
 export const routeConfig = [
-    {
-        path: "/",
+    {        path: "/",
         element: <Login />,
     },
     {
@@ -40,5 +40,8 @@ export const routeConfig = [
     }, {
         path: "/profile",
         element: <Profile />
+    }, {
+        path: "/landing",
+        element: <LandingPage />
     }
 ];

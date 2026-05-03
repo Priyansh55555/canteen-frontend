@@ -14,7 +14,7 @@ export const Axios = axios.create({
 });
 
 
-const publicRoutes = ["/", "/signup"];
+const publicRoutes = ["/", "/signup", "/landing"];
 
 const App = () => {
   const renderRoutes = (config) => (
