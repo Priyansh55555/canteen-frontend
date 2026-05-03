@@ -4,7 +4,7 @@ import * as z from "zod";
 import { Mail, Lock, User, Loader2, ArrowRight, Github, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import  { useRegister } from "../../hooks/AuthHook.jsx";
+import  { useRegister } from "../../hooks/useAuth.jsx";
 import toast from "react-hot-toast";
 import { formatedError } from "../../utils/errorHandler.jsx";
 

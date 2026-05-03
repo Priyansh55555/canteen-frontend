@@ -4,7 +4,7 @@ import { routeConfig } from './routeConfig';
 import Layout from './components/layout/Layout';
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
-import { useGetUser } from "./hooks/AuthHook";
+import { useGetUser } from "./hooks/useAuth";
 import "./App.css";
 import useSocket from './hooks/useSocket';
 export const Axios = axios.create({

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useGetUser, useLogout } from '../../hooks/AuthHook'
+import { useGetUser, useLogout } from '../../hooks/useAuth'
 import { ChevronDown, LogOut, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 

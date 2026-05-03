@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react'
-import { useGetUser } from '../../hooks/AuthHook';
+import { useGetUser } from '../../hooks/useAuth';
 import { History, ListOrdered, ShoppingBag, UtensilsCrossed, UtensilsCrossedIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/layout/Header';
 import { Statics } from "../../constants/DashboardStatics";
-import { useGetAllOrders } from '../../hooks/adminHook';
+import { useGetAllOrders } from '../../hooks/useAdmin';
 
 
 const Dashboard = () => {

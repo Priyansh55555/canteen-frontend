@@ -4,7 +4,7 @@ import { loginSchema } from "../../schemas/loginSchema";
 import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useLogin } from "../../hooks/AuthHook";
+import { useLogin } from "../../hooks/useAuth";
 import { formatedError } from "../../utils/errorHandler";
 import toast from "react-hot-toast";
 

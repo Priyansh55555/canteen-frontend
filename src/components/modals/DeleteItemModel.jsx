@@ -3,7 +3,7 @@ import { X, Trash2, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import { extractMessageFromError } from "../../utils/errorHandler";
 import { motion } from "framer-motion";
-import { useDeleteFood } from "../../hooks/adminHook";
+import { useDeleteFood } from "../../hooks/useAdmin";
 
 const DeleteItemModel = ({ data, onClose }) => {
     const { mutateAsync: deleteFoodItem } = useDeleteFood();

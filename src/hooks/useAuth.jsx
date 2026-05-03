@@ -21,6 +21,28 @@ export const useLogout =  ()=> {
               },
         });
 };
+
+// export interface User {
+//         _id: string;
+      
+//         name: string;
+//         email: string;
+//         role: "admin" | "user"; // extend if needed
+      
+//         fullName: string;
+//         profilePicture: string;
+//         posterPicture: string;
+      
+//         isVerified: boolean;
+//         phoneNumber: string;
+      
+//         gender: "male" | "female" | "other"; // safer than plain string
+//         address: string;
+      
+//         createdAt: string; // or Date if you parse it
+//         updatedAt: string; // or Date
+//       }
+
 export const useGetUser =  ()=> useQuery({
         queryKey: ['user', 'get-user'], 
         queryFn: () => AuthService.getUser()

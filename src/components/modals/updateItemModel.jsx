@@ -6,7 +6,7 @@ import { Upload, XCircle, Loader, X, Pencil } from "lucide-react";
 import { zfd } from "zod-form-data";
 import toast from "react-hot-toast";
 import { extractMessageFromError } from "../../utils/errorHandler";
-import { useUpdateFood } from "../../hooks/adminHook";
+import { useUpdateFood } from "../../hooks/useAdmin";
 import { motion } from "framer-motion";
 import Checkbox from "../ui/Checkbox";
 
