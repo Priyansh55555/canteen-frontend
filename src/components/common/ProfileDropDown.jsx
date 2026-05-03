@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useGetUser, useLogout } from '../../hooks/AuthHook'
-import { ChevronDown, LogOut } from 'lucide-react';
+import { ChevronDown, LogOut, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const ProfileDropDown = () => {
@@ -37,9 +38,17 @@ const ProfileDropDown = () => {
                 </div>
                 <ChevronDown className={`w-4 h-4 ${showDropdown ? "rotate-180" : ""} `} />
                 {showDropdown &&
-                    <div className="w-full absolute -bottom-12 left-0 rounded-lg bg-white overflow-hidden shadow-lg border border-gray-300">
+                    <div className="w-full absolute -bottom-20 left-0 rounded-lg bg-white overflow-hidden shadow-lg border border-gray-300">
+                        <Link
+                            to="/profile"
+                            className="flex gap-2 items-center p-2 w-full text-gray-700 hover:bg-gray-50 cursor-pointer hover:text-gray-900"
+                            onClick={() => setShowDropDown(false)}
+                        >
+                            <User className="w-4 h-4" />
+                            <span>Profile</span>
+                        </Link>
                         <button onClick={handleLogout} className="flex gap-2 items-center p-2 w-full text-red-400 hover:bg-blue-50 cursor-pointer hover:text-red-600 hover:font-semibold"><LogOut className="w-4 h-4" /> <span>Logout</span> </button>
-
+ 
                     </div>
                 }
             </div>
