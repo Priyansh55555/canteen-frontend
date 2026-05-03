@@ -27,6 +27,7 @@ const FoodSchema = z.object({
   description: z.string().min(5, "Description must be at least 5 characters"),
   image: fileSchema.optional(), // 👈 important
   isAvailable: z.boolean().default(true),
+  canShowWithoutLogin: z.boolean().default(false),
 });
 
 const UpdateItemModel = ({ defaultData, onClose }) => {
@@ -46,6 +47,7 @@ const UpdateItemModel = ({ defaultData, onClose }) => {
   });
 
   const isAvailable = watch("isAvailable");
+  const canShowWithoutLogin = watch("canShowWithoutLogin");
 
   useEffect(() => {
     if (defaultData) {
@@ -56,6 +58,7 @@ const UpdateItemModel = ({ defaultData, onClose }) => {
         description: defaultData.description || "",
         image: undefined, // 👈 never set file here
         isAvailable: defaultData.isAvailable ?? true,
+        canShowWithoutLogin: defaultData.canShowWithoutLogin ?? false,
       });
     }
 
@@ -73,6 +76,7 @@ const UpdateItemModel = ({ defaultData, onClose }) => {
     formData.append("category", data.category);
     formData.append("description", data.description);
     formData.append("isAvailable", data.isAvailable);
+    formData.append("canShowWithoutLogin", data.canShowWithoutLogin);
 
     if (data.image) {
       formData.append("image", data.image);
@@ -190,17 +194,21 @@ const UpdateItemModel = ({ defaultData, onClose }) => {
             </div>
 
             {/* Availability */}
-            <div 
-              className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer"
-              onClick={() => setValue("isAvailable", !isAvailable, { shouldValidate: true })}
-            >
+            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
               <Checkbox
                 state={isAvailable}
-                setState={() => setValue("isAvailable", !isAvailable, { shouldValidate: true })}
+                setState={(checked) => setValue("isAvailable", checked, { shouldValidate: true })}
+                label="Available for ordering"
               />
-              <label className="font-medium text-gray-700 text-sm cursor-pointer">
-                Available for ordering
-              </label>
+            </div>
+
+            {/* View on Landing page */}
+            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+              <Checkbox
+                state={canShowWithoutLogin}
+                setState={(checked) => setValue("canShowWithoutLogin", checked, { shouldValidate: true })}
+                label="View on Landing page"
+              />
             </div>
 
             {/* Image Upload */}

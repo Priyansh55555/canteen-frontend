@@ -1,4 +1,4 @@
-import { useMutation , useQuery } from '@tanstack/react-query';
+import {  useQuery } from '@tanstack/react-query';
 import { MenuService } from '../services/menuService';
 
 export const useGetAllMenu =  ()=> useQuery({
@@ -6,6 +6,9 @@ export const useGetAllMenu =  ()=> useQuery({
         queryFn: () => MenuService.getAllMenu()
 });
 
-
+export const getAllMenuLandingPage =  ()=> useQuery({
+        queryKey: ['menu-landing-page'],
+        queryFn: () => MenuService.getAllMenuLandingPage()
+});
 
 

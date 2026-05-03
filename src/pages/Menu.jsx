@@ -71,7 +71,12 @@ const Menu = () => {
               <div className="p-4 w-full">
                 <div className="flex items-baseline">
                   <h2 className="text-xl font-semibold mb-2">{item.name}</h2>
-                  <span className="bg-gray-200 text-xs px-2 py-1 capitalize rounded-lg ml-auto">{item.category}</span>
+                  <div className="ml-auto flex gap-2">
+                    {item.canShowWithoutLogin && (
+                      <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-lg">Public</span>
+                    )}
+                    <span className="bg-gray-200 text-xs px-2 py-1 capitalize rounded-lg">{item.category}</span>
+                  </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-lg text-orange-600 font-semibold">₹{item.price}</span>

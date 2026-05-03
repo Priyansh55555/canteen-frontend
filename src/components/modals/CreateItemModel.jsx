@@ -27,6 +27,7 @@ const FoodSchema = z.object({
   description: z.string().min(5, "Description must be at least 5 characters"),
   image: fileSchema,
   isAvailable: z.boolean().default(true),
+  canShowWithoutLogin: z.boolean().default(false),
 });
 
 const CreateItemModel = ({ onClose }) => {
@@ -47,6 +48,7 @@ const CreateItemModel = ({ onClose }) => {
 
   
   const isAvailable = watch("isAvailable");
+  const canShowWithoutLogin = watch("canShowWithoutLogin");
   const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append("name", data.name);
@@ -55,6 +57,7 @@ const CreateItemModel = ({ onClose }) => {
     formData.append("description", data.description);
     formData.append("image", data.image);
     formData.append("isAvailable", data.isAvailable);
+    formData.append("canShowWithoutLogin", data.canShowWithoutLogin);
 
     try {
       await createFoodItem(formData);
@@ -165,17 +168,21 @@ const CreateItemModel = ({ onClose }) => {
             </div>
 
             {/* Availability */}
-            <div 
-              className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer"
-              onClick={() => setValue("isAvailable", !isAvailable, { shouldValidate: true })}
-            >
+            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
               <Checkbox
                 state={isAvailable}
-                setState={() => setValue("isAvailable", !isAvailable, { shouldValidate: true })}
+                setState={(checked) => setValue("isAvailable", checked, { shouldValidate: true })}
+                label="Available for ordering"
               />
-              <label className="font-medium text-gray-700 text-sm cursor-pointer">
-                Available for ordering
-              </label>
+            </div>
+
+            {/* View on Landing page */}
+            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+              <Checkbox
+                state={canShowWithoutLogin}
+                setState={(checked) => setValue("canShowWithoutLogin", checked, { shouldValidate: true })}
+                label="View on Landing page"
+              />
             </div>
 
             {/* Image Upload */}
