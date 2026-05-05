@@ -1,5 +1,5 @@
 import React from 'react'
-import { useGetUser } from '../../hooks/AuthHook'
+import { useGetUser } from '../../hooks/useAuth'
 import { ShieldUser, UtensilsCrossed } from 'lucide-react';
 import ProfileDropDown from '../common/ProfileDropDown';
 

@@ -1,13 +1,15 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../schemas/loginSchema";
-import { Mail, Lock, Loader2, ArrowRight } from "lucide-react";
+import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useLogin } from "../../hooks/AuthHook";
+import { useLogin } from "../../hooks/useAuth";
 import { formatedError } from "../../utils/errorHandler";
 import toast from "react-hot-toast";
 
 export default function LoginForm() {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -102,16 +104,27 @@ export default function LoginForm() {
                 <Lock className="h-5 w-5 text-orange-400" />
               </div>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 {...register("password")}
-                className={`w-full rounded-md py-3 pl-10 text-sm outline-none ring-1 transition
+                className={`w-full rounded-md py-3 pl-10 pr-10 text-sm outline-none ring-1 transition
                   ${
                     errors.password
                       ? "ring-red-500 bg-red-50"
                       : "ring-gray-300 focus:ring-orange-500"
                   }`}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                ) : (
+                  <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                )}
+              </button>
             </div>
             {errors.password && (
               <p className="mt-1 text-sm text-red-600">

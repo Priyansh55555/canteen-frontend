@@ -1,31 +1,26 @@
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Resigter'
 import Dashboard from './pages/adminpages/Dashboard';
-import Home from './pages/Home'
 import Cart from './pages/Cart'
 import OrderHistory from './pages/OrderHistory';
 import User from './pages/User';
+import Profile from './pages/user/Profile';
 import OrderQueue from './pages/adminpages/OrderQueue';
 import MenuManagment from './pages/adminpages/MenuManagment';
 import Menu from './pages/Menu';
+import LandingPage from './pages/LandingPage';
 
 export const routeConfig = [
-    {
-        path: "/",
+    {        path: "/",
         element: <Login />,
     },
     {
         path: "/signup",
         element: <Register />,
-    },
-    {
-        path: "/home",
-        element: <Home />,
-    }, {
+    },{
         path: "/dashboard",
         element: <Dashboard />,
-    }, {
-        path: "/cart",
+    }, {  path: "/cart",
         element: <Cart />
     }, {
         path: "/order-history",
@@ -42,5 +37,11 @@ export const routeConfig = [
     },{
         path: "/menu",
         element: <Menu />
+    }, {
+        path: "/profile",
+        element: <Profile />
+    }, {
+        path: "/landing",
+        element: <LandingPage />
     }
 ];

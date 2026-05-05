@@ -15,6 +15,11 @@ export default defineConfig({
         // secure: false, // Optional: disable SSL certificate verification for dev
         // ws: true, // Optional: enable WebSocket proxying
       },
+      '/socket.io': {  // <-- Socket.IO path
+        target: 'http://localhost:5000',
+        ws: true,       // <-- enable WebSocket proxy
+        changeOrigin: true,
+      },
     },
   },
 })

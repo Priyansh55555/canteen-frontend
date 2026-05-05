@@ -1,9 +1,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Mail, Lock, User, Loader2, ArrowRight, Github } from "lucide-react";
-import { Link } from "react-router-dom";
-import  { useRegister } from "../../hooks/AuthHook.jsx";
+import { Mail, Lock, User, Loader2, ArrowRight, Github, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import  { useRegister } from "../../hooks/useAuth.jsx";
 import toast from "react-hot-toast";
 import { formatedError } from "../../utils/errorHandler.jsx";
 
@@ -20,6 +21,8 @@ const registerSchema = z
   });
 
 export default function RegisterForm() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -28,23 +31,21 @@ export default function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
-  const { mutate: Login , isLoading: isRegistering } = useRegister();
+  const { mutateAsync : Login , isLoading: isRegistering } = useRegister();
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
 
     console.log(data);
- 
-     await Login(data, 
-      {
-        onSuccess: (data)=>{
-          console.log("registered successfully", data);
-          toast.success("User Registered Successfully");
-        },
-        onError: (err)=>{
-          toast.error(formatedError(err));
-          console.log("regisration error", err);
-        }
-      })
     
+    try{
+     const res = await Login(data); 
+      console.log("registered successfully", res);
+      toast.success("User Registered Successfully");
+      navigate("/dashboard" , { replace: true });
+    }catch(err){
+      toast.error(formatedError(err));
+      console.log("regisration error", err);
+    }
   };
   
   return (
@@ -134,15 +135,26 @@ export default function RegisterForm() {
               </div>
               <input
                 {...register("password")}
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Create a password"
-                className={`w-full rounded-md py-3 pl-10 text-sm outline-none ring-1 transition
+                className={`w-full rounded-md py-3 pl-10 pr-10 text-sm outline-none ring-1 transition
                   ${
                     errors.password
                       ? "ring-red-500 bg-red-50"
                       : "ring-gray-300 focus:ring-orange-500"
                   }`}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                ) : (
+                  <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                )}
+              </button>
             </div>
             {errors.password && (
               <p className="mt-1 text-xs text-red-600">
@@ -162,15 +174,26 @@ export default function RegisterForm() {
               </div>
               <input
                 {...register("confirmPassword")}
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm password"
-                className={`w-full rounded-md py-3 pl-10 text-sm outline-none ring-1 transition
+                className={`w-full rounded-md py-3 pl-10 pr-10 text-sm outline-none ring-1 transition
                   ${
                     errors.confirmPassword
                       ? "ring-red-500 bg-red-50"
                       : "ring-gray-300 focus:ring-orange-500"
                   }`}
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3"
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                ) : (
+                  <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                )}
+              </button>
             </div>
             {errors.confirmPassword && (
               <p className="mt-1 text-xs text-red-600">

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import BackHeader from '../../components/layout/BackHeader';
 import CreateItemModel from '../../components/modals/CreateItemModel';
 import { AnimatePresence } from 'framer-motion';
-import { useGetAllMenu } from '../../hooks/MenuHook';
+import { useGetAllMenu } from '../../hooks/useMenu';
 import MenuEditCard from '../../components/menu/MenuEditCard';
 import MenuCardSkeleton from '../../components/menu/MenuCardSkeleton';
 import MenuEmptyState from '../../components/menu/MenuEmptyState';

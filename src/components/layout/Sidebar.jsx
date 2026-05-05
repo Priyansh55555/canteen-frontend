@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { History, Home, LayoutDashboard, LogOut, ShoppingCart, User } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useGetUser, useLogout } from '../../hooks/AuthHook';
+import { useGetUser, useLogout } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 

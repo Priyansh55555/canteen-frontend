@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import BackHeader from '../../components/layout/BackHeader'
 import { ChefHat, PackageOpen } from 'lucide-react' // Added PackageOpen for empty state
-import { useGetAllOrders, useUpdateOrderStatus } from '../../hooks/adminHook';
+import { useGetAllOrders, useUpdateOrderStatus } from '../../hooks/useAdmin';
 import OrderCard from "../../components/order-queue/OrderCard";
 import toast from 'react-hot-toast';
 import { extractMessageFromError } from '../../utils/errorHandler';

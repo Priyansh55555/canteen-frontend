@@ -4,8 +4,9 @@ import { routeConfig } from './routeConfig';
 import Layout from './components/layout/Layout';
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
-import { useGetUser } from "./hooks/AuthHook";
+import { useGetUser } from "./hooks/useAuth";
 import "./App.css";
+import useSocket from './hooks/useSocket';
 export const Axios = axios.create({
   baseURL: '/api',
   timeout: 10000,
@@ -13,7 +14,7 @@ export const Axios = axios.create({
 });
 
 
-const publicRoutes = ["/", "/signup"];
+const publicRoutes = ["/", "/signup", "/landing"];
 
 const App = () => {
   const renderRoutes = (config) => (
@@ -30,7 +31,8 @@ const App = () => {
   const currentRoute = location.pathname;
   const navigate = useNavigate();
 
-
+  
+  useSocket(user?.user?._id);
   useEffect(()=>{
     console.log(user, currentRoute);
     if(isLoading) return;
